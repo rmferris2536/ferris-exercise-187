@@ -1,0 +1,62 @@
+//AUTHOR: ROBERT M FERRIS
+//COURSE: CPT 187
+//PURPOSE: Saved information used in order to complete the customers purchase. Contains item ID's, item names, item prices, quantity requested, and total amount for saved information.
+//STARTDATE: 02/24/2022
+
+package edu.cpt187.ferris.exercise7;
+//IMPORT PRINT WRITER
+import java.io.PrintWriter;
+//IMPORT FILE WRITER
+import java.io.FileWriter;
+//IMPORT IOEXCEPTION
+import java.io.IOException;
+//CLASS START
+public class WriteOrder 
+{
+	//CLASS ATTRIBUTES
+	private boolean fileFoundFlag = false;
+	private String masterFileName = "";
+	private int recordCount = 0;
+
+	//CONSTRUCTOR
+	public WriteOrder(String borrowedFileName)
+	{
+		masterFileName = borrowedFileName;
+	}//CONSTRUCTOR END
+
+	//SET WRITE ORDER START
+	public void setWriteOrder(int borrowedItemID, String borrowedItemName, double borrowedItemPrice, int borrowedQuantity, double borrowedOrderCost)
+	{
+		//TRY BLOCK START
+		try
+		{
+			PrintWriter filePW = new PrintWriter (new FileWriter(masterFileName,true));
+			filePW.printf("%n%d\t%s\t%f\t%d\t%f",borrowedItemID, borrowedItemName, borrowedItemPrice, borrowedQuantity, borrowedOrderCost);
+			fileFoundFlag = true;
+			recordCount++;
+			filePW.close();
+		}//TRY BLOCK END
+		//CATCH BLOCK START
+		catch(IOException ex)
+		{
+			fileFoundFlag = false;
+		}//CATCH BLOCK END
+	}//SET WRITE ORDER END
+
+	//GETTERS
+	//GET FILE FOUND FLAG START
+	public boolean getFileFoundFlag()
+	{
+		return fileFoundFlag;
+	}// GET FILE FOUND FLAG END
+	//GET FILE NAME START
+	public String getFileName()
+	{
+		return masterFileName;
+	}//GET FILE NAME END
+	//GET RECORD COUNT START
+	public int getRecordCount()
+	{
+		return recordCount;
+	}//GET RECORD COUNT END
+}//CLASS END
