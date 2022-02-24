@@ -1,0 +1,132 @@
+//AUTHOR: ROBERT M FERRIS
+//COURSE: CPT 187
+//PURPOSE: Allows users to set up a user account and password and stores the information. 
+//STARTDATE: 02/24/2022
+
+package edu.cpt187.ferris.exercise7;
+//IMPORT FILE WRITER
+import java.io.FileWriter;
+//IMPORT PRINT WRITER
+import java.io.PrintWriter;
+//IMPORT SCANNER FUNCTION
+import java.util.Scanner;
+//IMPORT FILE INPUT STREAM
+import java.io.FileInputStream;
+//IMPORT IO EXCEPTION FUNCTION
+import java.io.IOException;
+//CLASS START
+public class UserAccounts 
+{
+	//CLASS ATTRIBUTES
+	private final int NOT_FOUND = -1;
+	private final int RESET_VALUE = 0;
+	private final int MAXIMUM_RECORDS = 50;
+	private String[] userNames = new String[MAXIMUM_RECORDS];
+	private String[] passwords = new String[MAXIMUM_RECORDS];
+	private String masterFileName = "";
+	private int recordCount = 0;
+	private int searchedIndex = 0;
+
+	//CONSTRUCTOR START
+	public UserAccounts(String borrowedFileName)
+	{
+		masterFileName = borrowedFileName;
+	}//CONSTRUCTOR END
+
+	//SETTERS
+	//SET USER ACCOUNT ARRAYS START
+	public void setUserAccountArrays()
+	{
+		//TRY BLOCK START
+		try
+		{
+			Scanner infile = new Scanner (new FileInputStream(masterFileName));
+			recordCount = RESET_VALUE;
+			//REPETITION STRUCTURE TO PROCESS RECORD IN THE FILE START
+			while (infile.hasNext() == true && recordCount < MAXIMUM_RECORDS)
+			{
+				userNames[recordCount] = infile.next();
+				passwords[recordCount] = infile.next();
+				recordCount++;
+			}//REPETITION STRUCTURE TO PROCESS RECORD IN THE FILE END
+			infile.close();
+		}//TRY BLOCK END
+		//CATCH BLOCK START
+		catch(IOException ex)
+		{
+			recordCount = NOT_FOUND;
+		}//CATCH BLOCK END	
+	}//SET USER ACCOUNT ARRAYS END
+	//SET SEARCHED INDEX START
+	public void setSearchedIndex(String borrowedUserName)
+	{
+		searchedIndex = getSeqSearch(borrowedUserName);
+	}//SET SEARCHED INDEX END
+	//SET OVERLOADED SEARCHED INDEX START
+	public void setSearchedIndex(String borrowedUserName, String borrowedPassword)
+	{
+		searchedIndex = getSeqSearch(borrowedUserName);
+		if (searchedIndex >= RESET_VALUE && getPasswordMatch(borrowedPassword) == false)
+		{
+			searchedIndex = NOT_FOUND;
+		}
+	}//SET OVERLOADED SEARCHED INDEX END
+	//SET WRITE ONE RECORD START
+	public void setWriteOneRecord(String borrowedUserName, String borrowedPassword)
+	{
+		//TRY BLOCK START
+		try
+		{
+			PrintWriter filePW = new PrintWriter (new FileWriter(masterFileName,true));
+			filePW.printf("%n%s\t%s",borrowedUserName, borrowedPassword);
+			filePW.close();
+			recordCount++;
+		}//TRY BLOCK END
+		//CATCH BLOCK START
+		catch(IOException ex)
+		{
+			recordCount = NOT_FOUND;
+		}//CATCH BLOCK END
+	}//SET WRITE ONE RECORD END
+
+	//GETTERS
+	//GET SEQUENTIAL SEARCH START
+	public int getSeqSearch(String borrowedBorrowedUserName)
+	{
+		int localIndex = 0;
+		int localFound = NOT_FOUND;
+		while (localIndex < recordCount)
+		{
+			if( borrowedBorrowedUserName.equalsIgnoreCase(userNames[localIndex]))
+			{
+				localFound = localIndex;
+				localIndex = recordCount;
+			}
+			else
+			{
+				localIndex++;
+			}
+		}
+		return localFound;
+	}//GET SEQUENTIAL SEARCH END
+	//GET PASSWORD MATCH START
+	public boolean getPasswordMatch(String borrowedBorrowedPassword)
+	{
+		return (borrowedBorrowedPassword.equals(passwords[searchedIndex]) == true);
+	}//GET PASSWORD MATCH END
+	//GET FILE NAME START
+	public String getFileName()
+	{
+		return masterFileName;
+	}//GET FILE NAME END
+	//GET RECORD COUNT START
+	public int getRecordCount()
+	{
+		return recordCount;
+	}//GET RECORD COUNT END
+	//GET SEARCHED INDEX START
+	public int getSearchedIndex()
+	{
+		return searchedIndex;
+	}//GET SEARCHED INDEX END
+}//CLASS END
